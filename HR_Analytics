@@ -1,0 +1,328 @@
+USE AdventureWorks2012;
+
+-- A QUERY TO EXTRACT ALL THE EMPLOYEES PRESENTLY WORKING IN THE COMPANY
+SELECT *
+FROM [HumanResources].[Employee]
+
+--A QUERY TO EXTRACT SINGLE MALE EMPLOYEES
+SELECT [BusinessEntityID],
+		[JobTitle],
+		[BirthDate],
+		[MaritalStatus],
+		[Gender],
+		[HireDate]
+FROM [HumanResources].[Employee]
+WHERE [Gender] = 'M' AND [MaritalStatus] = 'S';
+
+-- A QUERY TO EXTRACT FEMALE EMPLOYEES
+SELECT [BusinessEntityID],
+		[JobTitle],
+		[BirthDate],
+		[MaritalStatus],
+		[Gender],
+		[HireDate]
+FROM [HumanResources].[Employee] 
+WHERE [Gender] <> 'M'
+
+--A QUERY TO GET THE EMPLOYEES WITH MORE THAN 50 SICK LEAVE HOURS
+SELECT [BusinessEntityID],
+		[JobTitle],
+		[BirthDate],
+		[MaritalStatus],
+		[Gender],
+		[HireDate],
+		[SickLeaveHours]
+FROM [HumanResources].[Employee]
+WHERE [SickLeaveHours] < 50
+
+-- WRITE A QUERY TO GET THE MALE SINGLE EMPLOYEE WITH MORE THAN 50 SICK LEAVE HOURS
+SELECT [BusinessEntityID],
+		[JobTitle],
+		[BirthDate],
+		[MaritalStatus],
+		[Gender],
+		[HireDate],
+		[SickLeaveHours]
+FROM [HumanResources].[Employee]
+WHERE [Gender] = 'M' AND [MaritalStatus] = 'S' AND [SickLeaveHours] > 50
+
+-- GET THE LIST OF EMPLOYEES WITH MORE THAN 50 SICK LEAVE HRS OR MORE THAN 50 VACATION HRS
+SELECT [BusinessEntityID],
+		[JobTitle],
+		[BirthDate],
+		[MaritalStatus],
+		[Gender],
+		[HireDate],
+		[SickLeaveHours],
+		[VacationHours]
+FROM [HumanResources].[Employee]
+WHERE [VacationHours] > 50 OR [SickLeaveHours] > 50
+
+-- A QUERY TO GET A LIST OF EMPLOYEES WITH SICKLEAVE HOURS BETWEEN 50 AND 70
+SELECT [BusinessEntityID],
+		[JobTitle],
+		[BirthDate],
+		[MaritalStatus],
+		[Gender],
+		[HireDate],
+		[SickLeaveHours]
+FROM [HumanResources].[Employee]
+WHERE [SickLeaveHours] BETWEEN 50 AND 70;
+
+-- A QUERY TO GET A LIST OF EMPLOYEES AND THIER SICKLEAVE HOURS ARRANGED IN DESCENDING ORDER
+SELECT [BusinessEntityID],
+		[JobTitle],
+		[BirthDate],
+		[MaritalStatus],
+		[Gender],
+		[HireDate],
+		[SickLeaveHours]
+FROM [HumanResources].[Employee]
+ORDER BY [SickLeaveHours] ASC
+
+
+-- A QUERY TO SHOW THE UNIQUE JOB TITLES
+SELECT DISTINCT [JobTitle]
+FROM [HumanResources].[Employee]
+
+-- A QUERY TO GET THE BOTTM 50 EMPLOYEES IN TERMS OF VACATION HOURS
+SELECT TOP 50 [BusinessEntityID],
+			[JobTitle],
+			[Gender],
+			[MaritalStatus],
+			[VacationHours]
+FROM [HumanResources].[Employee]
+ORDER BY [VacationHours] ASC
+
+
+-- EMPLOYEE COUNT BY JOB TITLE
+SELECT [JobTitle],
+		COUNT([JobTitle]) AS Employee_Count
+FROM [HumanResources].[Employee]
+GROUP BY [JobTitle]
+ORDER BY Employee_Count DESC
+
+
+-- EMPLOYEE COUNT BY GENDER
+SELECT [Gender],
+		COUNT([Gender]) AS Employee_Count
+FROM [HumanResources].[Employee]
+GROUP BY [Gender]
+ORDER BY Employee_Count DESC
+
+-- SUM OF VACATION HOURS BY MARITAL STATUS
+SELECT [MaritalStatus],
+		SUM([VacationHours]) AS Sum_Vacation_Hrs
+FROM [HumanResources].[Employee]
+GROUP BY [MaritalStatus]
+ORDER BY Sum_Vacation_Hrs DESC
+
+-- SUM SICK LEAVE HOURS FOR BOTH MALE AND FEMALE
+SELECT [Gender],
+	SUM([SickLeaveHours]) AS SUM_Sickleave_Hrs
+FROM [HumanResources].[Employee]
+GROUP BY [Gender]
+ORDER BY SUM_Sickleave_Hrs DESC
+
+-- AVERAGE SICK LEAVE HOURS FOR BOTH MALE AND FEMALE
+SELECT [Gender],
+	AVG([SickLeaveHours]) AS AVG_Sickleave_Hrs
+FROM [HumanResources].[Employee]
+GROUP BY [Gender]
+ORDER BY AVG_Sickleave_Hrs DESC
+
+-- SUM SICK LEAVE HOURS FOR BOTH MALE AND FEMALE
+SELECT [Gender],
+	SUM([SickLeaveHours]) AS SUM_Sickleave_Hrs
+FROM [HumanResources].[Employee]
+GROUP BY [Gender]
+ORDER BY SUM_Sickleave_Hrs DESC
+
+-- CALCULATE TOTAL EMPLOYEE COUNT, TOTAL SICK LEAVE HOUIRS AND TOTAL VACATION HOUSE
+SELECT COUNT([JobTitle]) AS TOTAL_HEADCOUNT, 
+		SUM( [SickLeaveHours])  AS TOTAL_SICKLEAVE_HRS,
+		SUM([VacationHours]) AS TOTAL_VACATION_HRS,
+		MIN([VacationHours])/ MAX( [VacationHours])  AS VARATION_HRS		 
+FROM [HumanResources].[Employee]
+
+--CALCULATE THE NUMBER OF YEARS EACH EMPLOYEE HAS WORKED
+SELECT [BusinessEntityID],
+	[JobTitle],
+	DATEDIFF(YEAR,[HireDate],GETDATE()) AS YEARS_SERVICE
+FROM [HumanResources].[Employee]
+
+--CALCULATE THE AGE EACH EMPLOYEE 
+SELECT [BusinessEntityID],
+	[JobTitle],
+	DATEDIFF(YEAR,[BirthDate],GETDATE()) AS AGE
+FROM [HumanResources].[Employee]
+
+--CALCULATE THE AGE OF EACH EMPLOYEE AT HIRE, ACTUAL AGE AND YEARS OF ACTIVE SERVICE
+SELECT [BusinessEntityID],
+		[JobTitle],
+		DATEDIFF(YEAR,[BirthDate],[HireDate]) AS AGE_AT_HIRE,
+		DATEDIFF(YEAR, [BirthDate], GETDATE()) AS PRESENT_AGE,
+		DATEDIFF(YEAR, [BirthDate], GETDATE()) - DATEDIFF(YEAR,[BirthDate],[HireDate]) AS YRS_OF_SERVICE
+FROM [HumanResources].[Employee]
+
+
+SELECT [BusinessEntityID], 
+	[JobTitle],
+	DATENAME(WEEKDAY,[HireDate]) AS HIRE_DAY
+FROM [HumanResources].[Employee]
+
+
+SELECT [BusinessEntityID],
+	LOWER([FirstName]) AS First_Name,
+	LOWER([MiddleName]) AS Middle_Name,
+	LOWER([LastName])  AS Last_Name,
+	CONCAT([FirstName],' ',[MiddleName],' ',[LastName]) AS Full_Name,
+	LEN([FirstName]) AS Number_Characters
+FROM [Person].[Person]
+
+
+SELECT [BusinessEntityID],
+		[JobTitle],
+	DATEPART(YEAR,[BirthDate]) AS YEAR
+FROM [HumanResources].[Employee]
+
+--A QUERY TO DETERMINE RETIREMENT YEAR OF ALL THE EMPLOYEES, GIVE A MAXIMUM OF 35YRS OF SERVICE
+--(ASSUMING EMPLOYEES CAME IN AT ENTRY LEVEL)
+SELECT [BusinessEntityID],
+		[JobTitle],
+		YEAR([HireDate]) AS YEAR,
+		DATEADD(YEAR,35,[HireDate]) AS RETIREMENT_YEAR
+FROM [HumanResources].[Employee]
+
+-- WRITE A QUERY TO DETERMINE THE RETIREMENT AGE OF EACH EMPLOYEE
+SELECT [BusinessEntityID],
+[JobTitle],
+YEAR([HireDate])AS HIRE_YEAR,
+DATEDIFF(YEAR,[BirthDate],DATEADD(YEAR,35,[HireDate])) AS RETIREMENT_AGE
+FROM[HumanResources].[Employee]
+
+--USE CASE FUNCTION TO WRITE EMPLOYEE GENDER IN FULL (M-MALE, F-FEMALE)
+SELECT [BusinessEntityID],
+	[JobTitle],	
+	CASE
+		WHEN [Gender] = 'M' THEN 'Male'
+		WHEN [Gender]  = 'F' THEN 'Female'
+    END AS Full_Gender
+FROM [HumanResources].[Employee]
+
+--USE CASE FUNCTION TO WRITE EMPLOYEE MARITAL STATUS IN FULL (M-Marrried, S-Single)
+SELECT [BusinessEntityID],
+	[JobTitle],
+    CASE 
+		WHEN [MaritalStatus]='S' THEN 'SINGLE'
+		WHEN [MaritalStatus] ='M' THEN 'MARRIED'
+    END AS FULL_MARITAL_STATUS
+FROM[HumanResources].[Employee]
+
+-- LESS 30 YOUNG ADULTS EMPLOYEE
+-- BETWEEN 31 AND 40 MIDLLE AGE EMPLOYEE
+-- ABOVE 40 OLD FULL ADULT EMPLOYEE
+SELECT [BusinessEntityID],
+		[JobTitle],
+		DATEDIFF(YEAR, [BirthDate], GETDATE()) AS AGE,
+		CASE
+			WHEN DATEDIFF(YEAR, [BirthDate], GETDATE()) <= 30 THEN 'YOUNG ADULTS EMPLOYEE'
+			WHEN DATEDIFF(YEAR, [BirthDate], GETDATE()) BETWEEN 31 AND 40 THEN ' MIDLLE AGED EMPLOYEE'
+			WHEN DATEDIFF(YEAR, [BirthDate], GETDATE()) > 40 THEN 'FULL ADULT EMPLOYEE'
+		END AS AGE_SEGMENT
+FROM [HumanResources].[Employee]
+ORDER BY DATEDIFF(YEAR, [BirthDate], GETDATE()) ASC
+
+-- BISENT, JOB, ORG LVL, ORDH HIR
+1- SENIOR MGT
+2- MANAGER
+3- SUPERV
+4- ASSOCIATE
+
+SELECT [BusinessEntityID],
+       [OrganizationLevel],
+       [JobTitle],
+		CASE
+			WHEN [OrganizationLevel] = 1 THEN 'SENIOR MGT'
+			WHEN [OrganizationLevel] =2 THEN 'MANAGER'
+			WHEN [OrganizationLevel] =3 THEN 'SUPERVISOR'
+			WHEN [OrganizationLevel] =4 THEN 'ASSOCIATE'
+			ELSE 'BOARD MEMBER'
+		END AS HEIRACHY
+FROM[HumanResources].[Employee]
+
+-- HRE - BUS ENT, JOB TITLE
+-- PP - FIRST NAME, LAST NAME
+--COMMON - [BusinessEntityID]
+
+SELECT HRE.[BusinessEntityID],
+		HRE.[JobTitle],
+		PP.[FirstName],
+		PP.[LastName]
+FROM [HumanResources].[Employee] AS HRE
+LEFT JOIN [Person].[Person] AS PP
+ON HRE.[BusinessEntityID] = PP.[BusinessEntityID]
+
+
+-- A QUERY TO GET EMPLOYEE SALARY
+--HRE- BUS ENT, JOB TITLE, 
+--HRP-  RATE , PAY FRE
+--COMMON - BUS ENT
+-- JOIN TYPE - 
+SELECT *
+FROM [HumanResources].[Employee]
+
+SELECT HRE.[BusinessEntityID],
+	HRE.[JobTitle],
+	HRP.[Rate],
+	HRP.[PayFrequency]
+FROM [HumanResources].[Employee] AS HRE
+LEFT OUTER JOIN [HumanResources].[EmployeePayHistory] AS HRP
+ON HRE.[BusinessEntityID] = HRP.[BusinessEntityID]
+
+SELECT *
+FROM [Person].[EmailAddress]
+
+SELECT *
+FROM [Person].[Person]
+
+-- WRITE A QUERY TO GET THE EMAIL OF ALL THE PEOPLE IN PERSON.PERSON TABLE
+--HINT JOIN PERSON .PERSON TABLE & PERSON.EMAILADDRESS
+--FIRST NAME, LAST NAME, EMAIL ADDRESS
+
+--[Person].[EmailAddress]--[EmailAddressID]
+--[Person].[Person]--[BusinessEntityID],[FirstName],[LastName]
+--COMON- BUS ENT
+--JOIN TYPE-- 
+SELECT PP.[BusinessEntityID]
+		,PP.[FirstName],
+		PP.[LastName],
+		PE.[EmailAddress]
+FROM [Person].[Person] AS PP
+LEFT JOIN [Person].[EmailAddress] AS PE
+ON PP.[BusinessEntityID] = PE.[BusinessEntityID]
+
+CREATE DATABASE PREPSNG_2023;
+
+USE PREPSNG_2023;
+
+CREATE TABLE PARTICIPANTS_BIODATA(
+	PARTICIPANTS_ID INT PRIMARY KEY,
+	LAST_NAME VARCHAR(50),
+	FIRST_NAME VARCHAR(50),
+	AGE INT,
+	JOINING_DATE DATE
+	);
+
+SELECT *
+FROM PARTICIPANTS_BIODATA 
+
+INSERT INTO PARTICIPANTS_BIODATA (PARTICIPANTS_ID,LAST_NAME,FIRST_NAME,AGE,JOINING_DATE)
+VALUES ('1' ,'ADEBAYO',  'SOLOMON', '45', '2023-06-28')
+
+UPDATE PARTICIPANTS_BIODATA
+SET FIRST_NAME = 'DAMILARE'
+WHERE PARTICIPANTS_ID = '1'
+
+SELECT *
+FROM PARTICIPANTS_BIODATA 
